@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
+import Login from "./pages/login";
 
 function App() {
-  return (
-    <div>
-      <h1>Cyber Security Dashboard</h1>
-    </div>
-  );
+  return <Login />;
 }
 
 export default App;
