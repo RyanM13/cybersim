@@ -1,4 +1,5 @@
 import Login from "./pages/login";
+import SignUp from "./pages/SignUp";
 import DashBoard from "./pages/DashBoard";
 import { BrowserRouter, Router, Route, Routes } from "react-router-dom";
 import AuthLayout from "./layouts/authlayout";
@@ -9,7 +10,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AuthLayout />}>
-          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
         </Route>
 
         <Route element={<MainLayout />}>
