@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import SignUp from "@/pages/SignUp";
 import {
   Card,
   CardContent,
@@ -14,11 +15,15 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 export function LoginForm({ className, ...props }) {
   return (
     <div
-      className={cn("flex flex-col gap-7 w-full max-w-md px-4", className)}
+      className={cn(
+        "flex flex-col gap-7 w-full max-w-md md:max-w-lg lg:max-w-xl px-4",
+        className,
+      )}
       {...props}
     >
       <Card>
@@ -44,7 +49,7 @@ export function LoginForm({ className, ...props }) {
                   Login
                 </Button>
                 <FieldDescription className="text-center">
-                  Don't have an account? <a href="#">Sign up</a>
+                  Don't have an account? <Link to="/signup">Sign Up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
