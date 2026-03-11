@@ -2,19 +2,18 @@ import Logo from "../assets/Logo.jpg";
 
 export default function Header({ minimal }) {
   return (
-    <>
-      <header className="bg-background">
-        <img className="size-24 rounded-full" src={Logo} alt="Logo" />
+    <header className="h-16 bg-background flex items-center px-6">
+      <img className="size-20 rounded-full " src={Logo} alt="Logo" />
 
-        {!minimal && (
-          <nav>
-            <button type="Home">Home</button>
-            <button type="Logs">Logs</button>
-            <button type="Wiki">Wiki</button>
-            <button type="Blog"></button>
-          </nav>
-        )}
-      </header>
-    </>
+      {/* Chatgpt: How to make this apply to my layout to only show on dashboard */}
+      {!minimal && (
+        <nav>
+          <button>Home</button>
+          <button>Logs</button>
+          <button>Wiki</button>
+          <button>Blog</button>
+        </nav>
+      )}
+    </header>
   );
 }

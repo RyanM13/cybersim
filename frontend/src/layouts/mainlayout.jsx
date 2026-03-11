@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <div>
+    <div className="flex h-auto">
       <Header />
-      <Outlet />
+      <div className="w-1/2 h-1/2 ">
+        <Outlet />
+      </div>
     </div>
   );
 }

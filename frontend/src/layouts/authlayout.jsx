@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
   return (
-    <div>
+    <div className="min-h-screen bg-background">
       <Header minimal />
-      <Outlet />
+      <main className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
+        <Outlet />
+      </main>
     </div>
   );
 }
