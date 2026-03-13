@@ -16,8 +16,16 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
-export function LoginForm({ className, ...props }) {
+export function LoginForm({ onLogin, error, className, ...props }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onLogin(username, password);
+  };
   return (
     <div
       className={cn(
@@ -34,17 +42,32 @@ export function LoginForm({ className, ...props }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FieldGroup className="space-y-9">
               <Field>
                 <FieldLabel htmlFor="username">Username</FieldLabel>
-                <Input id="username" type="text" required />
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </Field>
               <Field className="mt-5">
+                {error && (
+                  <p className="text-red-500 text-sm text-center">{error}</p>
+                )}
                 <Button type="submit" className="w-full">
                   Login
                 </Button>

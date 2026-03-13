@@ -32,16 +32,10 @@ export function SignupForm({ ...props }) {
               <Input id="name" type="text" placeholder="John Doe" required />
             </Field>
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-              />
+              <FieldLabel htmlFor="username">Username</FieldLabel>
+              <Input id="username" type="username" placeholder="" required />
               <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email
-                with anyone else.
+                Use this to login to your account.
               </FieldDescription>
             </Field>
             <Field>
@@ -60,9 +54,8 @@ export function SignupForm({ ...props }) {
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit">Create Account</Button>
-                <Button variant="outline" type="button">
-                  Sign up with Google
+                <Button variant="outline" type="submit">
+                  Create Account
                 </Button>
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <Link to="/login">Sign in</Link>

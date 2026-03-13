@@ -9,7 +9,6 @@
   html,
   * {
     @apply bg-gray-900;
-    overflow: hidden;
   }
 }
 
