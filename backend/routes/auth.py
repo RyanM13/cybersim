@@ -9,6 +9,7 @@ from services.auth import hash_password, check_password, create_token
 router = APIRouter(prefix="/auth")
 
 
+# Claude: How do I began writing the routes for this auth system
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.username == user.username).first()
