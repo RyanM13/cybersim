@@ -14,8 +14,28 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
-export function SignupForm({ ...props }) {
+export function SignupForm({ onSignup, error, className, ...props }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [localError, setLocalError] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLocalError("");
+    if (password !== confirmPassword) {
+      setLocalError("Passwords do not match");
+      return;
+    }
+    if (password.length < 8) {
+      setLocalError("Password must be at least 8 characters");
+      return;
+    }
+    onSignup(username, password);
+  };
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -25,22 +45,30 @@ export function SignupForm({ ...props }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="name">Full Name</FieldLabel>
-              <Input id="name" type="text" placeholder="John Doe" required />
-            </Field>
-            <Field>
               <FieldLabel htmlFor="username">Username</FieldLabel>
-              <Input id="username" type="username" placeholder="" required />
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
               <FieldDescription>
                 Use this to login to your account.
               </FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" type="password" required />
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
               <FieldDescription>
                 Must be at least 8 characters long.
               </FieldDescription>
@@ -49,19 +77,27 @@ export function SignupForm({ ...props }) {
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
               </FieldLabel>
-              <Input id="confirm-password" type="password" required />
-              <FieldDescription>Please confirm your password.</FieldDescription>
+              <Input
+                id="confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
             </Field>
-            <FieldGroup>
-              <Field>
-                <Button variant="outline" type="submit">
-                  Create Account
-                </Button>
-                <FieldDescription className="px-6 text-center">
-                  Already have an account? <Link to="/login">Sign in</Link>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
+            <Field>
+              {(localError || error) && (
+                <p className="text-red-500 text-sm text-center">
+                  {localError || error}
+                </p>
+              )}
+              <Button type="submit" className="w-full">
+                Create Account
+              </Button>
+              <FieldDescription className="px-6 text-center">
+                Already have an account? <Link to="/login">Sign in</Link>
+              </FieldDescription>
+            </Field>
           </FieldGroup>
         </form>
       </CardContent>

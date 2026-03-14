@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import SignUp from "@/pages/SignUp";
 import {
   Card,
   CardContent,
