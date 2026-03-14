@@ -1,32 +1,24 @@
 import { LoginForm } from "@/components/login-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const USER = [
-  { username: "Ryan", password: "password" },
-  { username: "testuser", password: "test123" },
-];
+import { login } from "@/services/authService";
 
 export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handlelogin = (username, password) => {
+  const handlelogin = async (username, password) => {
     setError("");
+    try {
+      await login(username, password);
+      navigate("/dashboard");
 
-    const user = USER.find((u) => u.username === username);
-
-    if (!user) {
-      setError("Username not found");
-      return;
+      // Claude: How do I handle the errors for login
+    } catch (err) {
+      if (err.response?.status === 404) setError("Username not found");
+      else if (err.response?.status === 401) setError("Incorrect password");
+      else setError("Something went wrong");
     }
-
-    if (user.password !== password) {
-      setError("Username not found");
-      return;
-    }
-
-    navigate("/dashboard");
   };
 
   return <LoginForm onLogin={handlelogin} error={error} />;
