@@ -1,3 +1,9 @@
+/**
+ * Configuration File for Vite
+ * 
+ * Responsible for Tailwind & React integration, and path aliasing.
+ */
+
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -10,10 +16,10 @@ const __dirname = path.dirname(__filename);
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss()],  // activates React and Tailwind CSS
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "./src"),  // shortcut using "@/" rather than "src/", 
     },
   },
 });
