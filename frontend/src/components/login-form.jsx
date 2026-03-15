@@ -14,11 +14,26 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
-export function LoginForm({ className, ...props }) {
+export function LoginForm({ onLogin, error, className, ...props }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onLogin(username, password);
+  };
   return (
-    <div className={cn("flex flex-col gap-7", className)} {...props}>
-      <Card className="w-130.75 h-145">
+    <div
+      className={cn(
+        "flex flex-col gap-7 w-full max-w-md md:max-w-lg lg:max-w-xl px-4",
+        className,
+      )}
+      {...props}
+    >
+      <Card>
         <CardHeader className="text-center space-y-4">
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
@@ -26,31 +41,37 @@ export function LoginForm({ className, ...props }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FieldGroup className="space-y-9">
               <Field>
                 <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
-                  className="h-13.75"
                   id="username"
-                  type="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </Field>
-
               <Field>
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input
                   id="password"
-                  className="h-13.75"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </Field>
-              <Field className="mt-10">
-                <Button type="submit">Login</Button>
+              <Field className="mt-5">
+                {error && (
+                  <p className="text-red-500 text-sm text-center">{error}</p>
+                )}
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
+                  Don't have an account? <Link to="/signup">Sign Up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
