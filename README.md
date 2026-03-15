@@ -23,7 +23,7 @@ THIS WILL BE THE BIG TIME README - Andrew
 | clsx | 2.1.1 | Conditionally joins class names |
 | lucide-react | 0.575.0 | Icon library for React |
 
-## Dev Dependencies
+## Development Dependencies
 
 | Package | Version | Purpose |
 |---|---|---|
