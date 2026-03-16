@@ -8,14 +8,11 @@ export default function MainLayout() {
   if (!isLoggedIn) return <Navigate to="/login" replace />;
 
   return (
-    <>
-      <div>
-        <Header />
-      </div>
-
-      <div className="flex items-center justify-center">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="flex min-h-[calc(90vh-4rem)] ml-3.5">
         <Outlet />
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
