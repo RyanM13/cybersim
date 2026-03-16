@@ -41,14 +41,14 @@ export default function DashBoard() {
             <CardHeader className="mt-4 w-full">
               <h2 className="text-2xl font-semibold">{attack.title}</h2>
             </CardHeader>
-            <CardContent className="flex-1">
+            <CardContent className="flex items-center justify-center">
               <p className="text-sm ">{attack.description}</p>
             </CardContent>
-            <CardAction className="mb-4 flex items-center">
+            <div className="flex  justify-center mb-4 w-full">
               <Button onClick={() => toggleSelect(attack.id)}>
                 {selected.includes(attack.id) ? "Deselect" : "Select"}
               </Button>
-            </CardAction>
+            </div>
           </Card>
         ))}
       </div>

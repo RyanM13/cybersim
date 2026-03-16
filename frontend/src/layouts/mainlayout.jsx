@@ -10,7 +10,7 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="flex min-h-[calc(90vh-4rem)] ml-3.5">
+      <main className="flex min-h-[calc(90vh-4rem)] ml-3.5 mt-9">
         <Outlet />
       </main>
     </div>
