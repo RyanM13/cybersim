@@ -37,7 +37,7 @@ export function SignupForm({ onSignup, error, className, ...props }) {
   };
 
   return (
-    <Card {...props}>
+    <Card className={"bg-gradient-to-b from-slate-900 to-slate-700"} {...props}>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>

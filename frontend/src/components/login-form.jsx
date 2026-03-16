@@ -28,12 +28,12 @@ export function LoginForm({ onLogin, error, className, ...props }) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-7 w-full max-w-md md:max-w-lg lg:max-w-xl px-4",
+        "flex flex-col gap-7 w-full max-w-md md:max-w-lg lg:max-w-xl px-4 ",
         className,
       )}
       {...props}
     >
-      <Card>
+      <Card className={"bg-gradient-to-b from-slate-900 to-slate-700"}>
         <CardHeader className="text-center space-y-4">
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
