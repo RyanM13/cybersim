@@ -8,7 +8,6 @@
   body,
   html,
   * {
-    @apply bg-gray-900;
   }
 }
 
@@ -55,7 +54,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #222831;
+  --background: #0f172b;
   --foreground: #ffffff;
   --card: #222831;
   --card-foreground: #ffffff;
