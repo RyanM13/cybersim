@@ -14,3 +14,12 @@ class UserLogin(BaseModel):
 
 class Command(BaseModel):
     command: str
+
+
+# Claude: What am I missing
+class DefendRequest(BaseModel):
+    ip: str
+
+
+class Logs(BaseModel):
+    log: str
