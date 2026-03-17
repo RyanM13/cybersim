@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { sendCommand } from "@/services/commandService";
 export default function Scenario() {
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState([]);
+  const [log, setLog] = useState([]);
 
   // Handles enter key pressed for terminal use
   function handleKeyDown(e) {
@@ -13,23 +15,28 @@ export default function Scenario() {
     }
   }
 
-  function handleCommand(command) {
-    const trimmed = command.trim().toLowerCase();
-    let output = "";
-
-    // Checking for commands
-    if (trimmed === "--help") {
-      output = "Available commands: --help, who";
-    } else {
-      output = `command not found: ${command}`;
+  async function handleCommand(command) {
+    if (command.trim() === "clear") {
+      setHistory([]);
+      return;
     }
 
     // Claude: How do I handle the history for the array
-    setHistory((prev) => [
-      ...prev,
-      { type: "input", text: command },
-      { type: "output", text: output },
-    ]);
+    try {
+      const output = await sendCommand(command);
+      setLog((prev) => [...prev, command]);
+      setHistory((prev) => [
+        ...prev,
+        { type: "input", text: command },
+        { type: "output", text: output },
+      ]);
+    } catch {
+      setHistory((prev) => [
+        ...prev,
+        { type: "input", text: command },
+        { type: "output", text: "Error: coult not connect to the server." },
+      ]);
+    }
   }
 
   return (
@@ -57,7 +64,7 @@ export default function Scenario() {
       </div>
 
       {/* Terminal panel - 70% */}
-      <div className="w-[70%] rounded-t-lg overflow-hidden shadow-2xl border border-gray-700 flex flex-col">
+      <div className="w-[70%] rounded-t-lg  shadow-2xl border border-gray-700 flex flex-col">
         <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500" />
           <div className="w-3 h-3 rounded-full bg-yellow-500" />
