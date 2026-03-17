@@ -3,12 +3,33 @@ export default function Scenario() {
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState([]);
 
+  // Handles enter key pressed for terminal use
   function handleKeyDown(e) {
     if (e.key === "Enter") {
       console.log(command);
+      handleCommand(command);
+      // Sets command back to empty for next input
       setCommand("");
-      setHistory((prev) => [...prev, command]);
     }
+  }
+
+  function handleCommand(command) {
+    const trimmed = command.trim().toLowerCase();
+    let output = "";
+
+    // Checking for commands
+    if (trimmed === "--help") {
+      output = "Available commands: --help, who";
+    } else {
+      output = `command not found: ${command}`;
+    }
+
+    // Claude: How do I handle the history for the array
+    setHistory((prev) => [
+      ...prev,
+      { type: "input", text: command },
+      { type: "output", text: output },
+    ]);
   }
 
   return (
@@ -44,11 +65,22 @@ export default function Scenario() {
           <span className="text-gray-400 text-sm mx-auto">terminal</span>
         </div>
         <div className="bg-gray-900 p-4 flex-1 font-mono text-sm gap-4">
+          {/* Claude: How do I handle writing to the terminal? */}
           {history.map((line, i) => (
-            <p>
-              <span className="text-blue-400">user@cybersim</span>
-              <span className="text-white">:~$ </span>
-              <span className="text-white">{line}</span>
+            <p key={i}>
+              {line.type === "input" && (
+                <>
+                  <span className="text-blue-400">user@cybersim</span>
+                  <span className="text-white">:~$ </span>
+                </>
+              )}
+              <span
+                className={
+                  line.type === "output" ? "text-green-400" : "text-white"
+                }
+              >
+                {line.text}
+              </span>
             </p>
           ))}
         </div>
