@@ -1,10 +1,22 @@
-import { useState } from "react";
-import { sendCommand } from "@/services/commandService";
+import { useState, useEffect } from "react";
+import { sendCommand, startScenario } from "@/services/scenarioService";
 export default function Scenario() {
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState([]);
   const [log, setLog] = useState([]);
-
+  const [attackerIp, setAttackerIp] = useState(null);
+  // Claude:
+  //  //useEffect(() => {
+  //    setAttackerIp() = startScenario()
+  //  });
+  //Why can't I do this, since startscenario is returning the ip I want to store it in the attackerIp?
+  useEffect(() => {
+    async function fetchIp() {
+      const ip = await startScenario();
+      setAttackerIp(ip);
+    }
+    fetchIp();
+  }, []);
   // Handles enter key pressed for terminal use
   function handleKeyDown(e) {
     if (e.key === "Enter") {
