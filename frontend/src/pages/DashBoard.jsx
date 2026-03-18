@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Array of attack descriptions
 const attacks = [
   {
     id: 1,
@@ -20,9 +21,12 @@ const attacks = [
 ];
 
 export default function DashBoard() {
+  // useState variables for changeable and useable variables
   const [selected, setSelected] = useState([]);
   const navigate = useNavigate();
 
+  // Claude: How do I handle selection of multiple attacks
+  // using map to select multiple selections
   const toggleSelect = (id) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
@@ -30,6 +34,7 @@ export default function DashBoard() {
   };
 
   // Claude: How do I handle navigation between dashboard and scenario
+  // Navigates user to scenario after selecting attacks.
   const handleStart = () => {
     if (selected.length === 0) return;
     // Testing purposes
@@ -40,6 +45,7 @@ export default function DashBoard() {
     <div className="w-full p-6 flex-col items-center">
       <h1 className="text-4xl text-center mb-6">Attack Selections</h1>
       <div className="grid grid-cols-3 gap-4 mt-10">
+        {/* using array to not have to hardcode attacks. Scalability */}
         {attacks.map((attack) => (
           <Card
             key={attack.id}

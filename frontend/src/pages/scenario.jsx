@@ -6,6 +6,7 @@ import {
 } from "@/services/scenarioService";
 
 export default function Scenario() {
+  // useState variables, keeps variables useable and changable
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -17,6 +18,8 @@ export default function Scenario() {
   //    setAttackerIp() = startScenario()
   //  });
   //Why can't I do this, since startscenario is returning the ip I want to store it in the attackerIp?
+  //
+  // Uses scenarioService to call backend and receive ip
   useEffect(() => {
     async function fetchIp() {
       const ip = await startScenario();
@@ -34,6 +37,7 @@ export default function Scenario() {
     }
   }
 
+  // Clears the terminal
   async function handleCommand(command) {
     if (command.trim() === "clear") {
       setHistory([]);
@@ -41,6 +45,9 @@ export default function Scenario() {
     }
 
     // Claude: How do I handle the history for the array
+    //
+    // sets memory for the evaluation, sets history for dispalying the terminal
+
     try {
       const output = await sendCommand(command);
       setMemory((prev) => [...prev, command]);
@@ -59,18 +66,19 @@ export default function Scenario() {
   }
 
   // Claude: How do I use the useEffect to start scenario and get logs?
-  useEffect(() => {
-    async function initScenario() {
-      const ip = await startScenario();
-      setAttackerIp(ip);
-      const logs = await getLogs();
-      setLogs(logs);
-    }
-    initScenario();
-  }, []);
+  // useEffect(() => {
+  //   async function initScenario() {
+  //     const ip = await startScenario();
+  //     setAttackerIp(ip);
+  //     const logs = await getLogs();
+  //     setLogs(logs);
+  //   }
+  //   initScenario();
+  // }, []);
 
   return (
     // Claude: Can you give me a mac style terminal and log panes?
+    // Mac style terminal for logs
     <div className="w-full min-h-[calc(90vh-4rem)]  flex p-6 gap-4">
       {/* Log panel - 30% */}
       <div className="w-[30%] rounded-t-lg overflow-hidden shadow-2xl border border-gray-700 flex flex-col">
@@ -94,6 +102,7 @@ export default function Scenario() {
       </div>
 
       {/* Terminal panel - 70% */}
+      {/* mac style terminal   */}
       <div className="w-[70%] rounded-t-lg  shadow-2xl border border-gray-700 flex flex-col">
         <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -103,6 +112,9 @@ export default function Scenario() {
         </div>
         <div className="bg-gray-900 p-4 flex-1 font-mono text-sm gap-4">
           {/* Claude: How do I handle writing to the terminal? */}
+
+          {/* Uses the history array to keep previous commands on the terminal,  */}
+          {/* as well as write the new ones  */}
           {history.map((line, i) => (
             <p key={i}>
               {line.type === "input" && (

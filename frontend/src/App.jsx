@@ -8,13 +8,16 @@ import Scenario from "./pages/scenario";
 
 function App() {
   return (
+    // Establishing browserrouter to enable routing between pages
     <BrowserRouter>
       <Routes>
+        {/* routing to authlayout for signup and login */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
         </Route>
 
+        {/* routing to mainlayout for all other pages */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/dashboard/scenario" element={<Scenario />} />
@@ -24,4 +27,5 @@ function App() {
   );
 }
 
+// Exporting app for other files to use
 export default App;
