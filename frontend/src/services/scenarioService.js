@@ -18,4 +18,5 @@ export async function defendScenario(ip) {
 
 export async function getLogs() {
   const { data } = await api.get("/log");
+  return data.logs;
 }

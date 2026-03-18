@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const attacks = [
   {
@@ -20,11 +21,19 @@ const attacks = [
 
 export default function DashBoard() {
   const [selected, setSelected] = useState([]);
+  const navigate = useNavigate();
 
   const toggleSelect = (id) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
+  };
+
+  // Claude: How do I handle navigation between dashboard and scenario
+  const handleStart = () => {
+    if (selected.length === 0) return;
+    // Testing purposes
+    navigate("/dashboard/scenario", { state: { selectedAttacks: selected } });
   };
 
   return (
@@ -51,6 +60,19 @@ export default function DashBoard() {
             </div>
           </Card>
         ))}
+      </div>
+
+      <div>
+        {/* Claude: How do I handle navigation between dashboard and scenario */}
+        <Button
+          onClick={handleStart}
+          disabled={selected.length === 0}
+          className={
+            "px-8 py-4 text-lg mt-5 bg-gray-700 flex items-center w-full"
+          }
+        >
+          Start Scenario
+        </Button>
       </div>
     </div>
   );

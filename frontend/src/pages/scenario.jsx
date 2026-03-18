@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
-import { sendCommand, startScenario } from "@/services/scenarioService";
+import {
+  sendCommand,
+  startScenario,
+  getLogs,
+} from "@/services/scenarioService";
+
 export default function Scenario() {
   const [command, setCommand] = useState("");
   const [history, setHistory] = useState([]);
-  const [log, setLog] = useState([]);
+  const [logs, setLogs] = useState([]);
+  const [memory, setMemory] = useState([]);
   const [attackerIp, setAttackerIp] = useState(null);
+
   // Claude:
   //  //useEffect(() => {
   //    setAttackerIp() = startScenario()
@@ -36,7 +43,7 @@ export default function Scenario() {
     // Claude: How do I handle the history for the array
     try {
       const output = await sendCommand(command);
-      setLog((prev) => [...prev, command]);
+      setMemory((prev) => [...prev, command]);
       setHistory((prev) => [
         ...prev,
         { type: "input", text: command },
@@ -50,6 +57,17 @@ export default function Scenario() {
       ]);
     }
   }
+
+  // Claude: How do I use the useEffect to start scenario and get logs?
+  useEffect(() => {
+    async function initScenario() {
+      const ip = await startScenario();
+      setAttackerIp(ip);
+      const logs = await getLogs();
+      setLogs(logs);
+    }
+    initScenario();
+  }, []);
 
   return (
     // Claude: Can you give me a mac style terminal and log panes?
