@@ -9,22 +9,24 @@ export default function Header({ minimal }) {
 
       {/* Chatgpt: How to make this apply to my layout to only show on dashboard */}
       {!minimal && (
-        <nav className="flex items-center justify-between ">
-          <ul className="flex flex-row justify-between p-4 items-center">
-            <li>
-              <a href="/dashboard">Home</a>
-            </li>
-            <li>
-              <a href="Logs">Logs</a>
-            </li>
-            <li>
-              <a href="Wiki">Wiki</a>
-            </li>
-            <li>
-              <a href="Blog">Blog</a>
-            </li>
-          </ul>
-        </nav>
+        <div className="absolute left-1/2 -translate-x-1/2">
+          <nav>
+            <ul className="flex flex-row gap-3 text-2xl">
+              <li>
+                <a href="/dashboard">Home</a>
+              </li>
+              <li>
+                <a href="Logs">Logs</a>
+              </li>
+              <li>
+                <a href="Wiki">Wiki</a>
+              </li>
+              <li>
+                <a href="Blog">Blog</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
       )}
     </header>
   );
