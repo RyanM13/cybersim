@@ -5,6 +5,9 @@ import { BrowserRouter, Router, Route, Routes } from "react-router-dom";
 import AuthLayout from "./layouts/authlayout";
 import MainLayout from "./layouts/mainlayout";
 import Scenario from "./pages/scenario";
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
+
 
 function App() {
   return (
@@ -21,6 +24,8 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/dashboard/scenario" element={<Scenario />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
         </Route>
       </Routes>
     </BrowserRouter>
