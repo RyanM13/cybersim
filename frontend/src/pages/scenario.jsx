@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  sendCommand,
-  startScenario,
-  getLogs,
-} from "@/services/scenarioService";
+import { sendCommand, startScenario } from "@/services/scenarioService";
+import { Terminal as LogTerminal } from "../components/ai/terminal.jsx";
+import { Terminal } from "../components/ui/terminal.jsx";
 
 export default function Scenario() {
   const [command, setCommand] = useState("");
@@ -11,6 +9,7 @@ export default function Scenario() {
   const [logs, setLogs] = useState([]);
   const [memory, setMemory] = useState([]);
   const [attackerIp, setAttackerIp] = useState(null);
+  const [messages, setMessages] = useState([]);
 
   // Handles enter key pressed for terminal use
   function handleKeyDown(e) {
@@ -22,22 +21,23 @@ export default function Scenario() {
     }
   }
 
-
-useEffect(() => {
-  async function initScenario() {
-    try {
+  useEffect(() => {
+    async function init() {
       const ip = await startScenario();
       setAttackerIp(ip);
-      const initialLogs = await getLogs();
-      console.log("Logs:", initialLogs);
-      setLogs(initialLogs || []);
-    } catch (error) {
-      console.error("Failed to initialize scenario:", error);
     }
-  }
-  initScenario();
-}, []);
+    init();
+  }, []);
 
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8000/scenario/logs");
+
+    socket.onmessage = (event) => {
+      const data = event.data;
+      setMessages((prev) => [...prev, data]);
+    };
+    return () => socket.close();
+  }, []);
 
   async function handleCommand(command) {
     if (command.trim() === "clear") {
@@ -62,12 +62,9 @@ useEffect(() => {
       ]);
     }
   }
-
-  
-
+  const logOutput = messages.join("\n");
   return (
-    // Claude: Can you give me a mac style terminal and log panes?
-    <div className="w-full min-h-[calc(90vh-4rem)]  flex p-6 gap-4">
+    <div className="w-full min-h-[calc(90vh-4rem)] flex p-6 gap-4">
       {/* Log panel - 30% */}
       <div className="w-[30%] rounded-t-lg overflow-hidden shadow-2xl border border-gray-700 flex flex-col">
         <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
@@ -76,59 +73,22 @@ useEffect(() => {
           <div className="w-3 h-3 rounded-full bg-green-500" />
           <span className="text-gray-400 text-sm mx-auto">auth.log — live</span>
         </div>
-      <div className="bg-gray-900 p-3 flex-1 font-mono text-xs overflow-y-auto">
-          {logs?.map((log, i) => (
-            <p key={i} className={`mb-1 ${log.includes("Failed") ? "text-red-400" : "text-green-400"}`}>
-              {log}
-            </p>
-          ))}
+        <LogTerminal
+          output={logOutput}
+          isStreaming={true}
+          className="flex-1 bg-gray-900 font-mono text-xs"
+        />
       </div>
-    </div>
 
       {/* Terminal panel - 70% */}
-      <div className="w-[70%] rounded-t-lg  shadow-2xl border border-gray-700 flex flex-col">
-        <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="text-gray-400 text-sm mx-auto">terminal</span>
-        </div>
-        <div className="bg-gray-900 p-4 flex-1 font-mono text-sm gap-4">
-          {/* Claude: How do I handle writing to the terminal? */}
-          {history.map((line, i) => (
-            <p key={i}>
-              {line.type === "input" && (
-                <>
-                  <span className="text-blue-400">user@cybersim</span>
-                  <span className="text-white">:~$ </span>
-                </>
-              )}
-              <span
-                className={
-                  line.type === "output" ? "text-green-400" : "text-white"
-                }
-              >
-                {line.text}
-              </span>
-            </p>
-          ))}
-        </div>
-
-        <div className="border-t border-white flex flex-row">
-          <label className="text-blue-400 ml-1 mr-0.5" for="command">
-            <span>Input</span>:
-          </label>
-          <input
-            id="command"
-            type="text"
-            name="command"
-            onChange={(e) => setCommand(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={command}
-            autoFocus
-            className="bg-transparent outline-none text-white caret-green-400 w-full"
-          />
-        </div>
+      <div className="w-[70%]">
+        <Terminal
+          welcomeMessage={[
+            "CyberSim Defense Terminal v1.0",
+            'Type "--help" to see available commands.',
+          ]}
+          className="h-full"
+        />
       </div>
     </div>
   );
