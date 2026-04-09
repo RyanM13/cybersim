@@ -12,11 +12,11 @@ export async function startScenario() {
 }
 
 export async function defendScenario(ip) {
-  const { data } = await api.post("scenario/defend", { ip });
+  const { data } = await api.post("/scenario/defend", { ip });
   return data.result;
 }
 
 export async function getLogs() {
-  const { data } = await api.get("/log");
-  return data.logs;
+  const { data } = await api.get("/scenario/log");
+  return data;
 }
