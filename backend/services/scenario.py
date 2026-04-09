@@ -19,19 +19,10 @@ class Scenario:
         return ip == self.attacker_ip
 
     def generate_logs(self):
-        logs = []
-        for attempts in range(10):
-            test = random.randint(1, 4)
-            if test == 1:
-                logs.append(
-                    f"{datetime.now().strftime('%b %d %H:%M:%S')} Accepted login from {self.generate_random_ip()}"
-                )
-            elif test == 2:
-                logs.append(
-                    f"{datetime.now().strftime('%b %d %H:%M:%S')} Failed login from {self.generate_random_ip()}"
-                )
-            else:
-                logs.append(
-                    f"{datetime.now().strftime('%b %d %H:%M:%S')} Failed login from {self.attacker_ip}"
-                )
-        return logs
+        test = random.randint(1, 4)
+        if test == 1:
+            return f"{datetime.now().strftime('%b %d %H:%M:%S')} Accepted login from {self.generate_random_ip()}"
+        elif test == 2:
+            return f"{datetime.now().strftime('%b %d %H:%M:%S')} Failed login from {self.generate_random_ip()}"
+        else:
+            return f"{datetime.now().strftime('%b %d %H:%M:%S')} Failed login from {self.attacker_ip}"
