@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   sendCommand,
   startScenario,
@@ -12,18 +12,6 @@ export default function Scenario() {
   const [memory, setMemory] = useState([]);
   const [attackerIp, setAttackerIp] = useState(null);
 
-  // Claude:
-  //  //useEffect(() => {
-  //    setAttackerIp() = startScenario()
-  //  });
-  //Why can't I do this, since startscenario is returning the ip I want to store it in the attackerIp?
-  useEffect(() => {
-    async function fetchIp() {
-      const ip = await startScenario();
-      setAttackerIp(ip);
-    }
-    fetchIp();
-  }, []);
   // Handles enter key pressed for terminal use
   function handleKeyDown(e) {
     if (e.key === "Enter") {
@@ -33,6 +21,23 @@ export default function Scenario() {
       setCommand("");
     }
   }
+
+
+useEffect(() => {
+  async function initScenario() {
+    try {
+      const ip = await startScenario();
+      setAttackerIp(ip);
+      const initialLogs = await getLogs();
+      console.log("Logs:", initialLogs);
+      setLogs(initialLogs || []);
+    } catch (error) {
+      console.error("Failed to initialize scenario:", error);
+    }
+  }
+  initScenario();
+}, []);
+
 
   async function handleCommand(command) {
     if (command.trim() === "clear") {
@@ -58,16 +63,7 @@ export default function Scenario() {
     }
   }
 
-  // Claude: How do I use the useEffect to start scenario and get logs?
-  useEffect(() => {
-    async function initScenario() {
-      const ip = await startScenario();
-      setAttackerIp(ip);
-      const logs = await getLogs();
-      setLogs(logs);
-    }
-    initScenario();
-  }, []);
+  
 
   return (
     // Claude: Can you give me a mac style terminal and log panes?
@@ -80,18 +76,14 @@ export default function Scenario() {
           <div className="w-3 h-3 rounded-full bg-green-500" />
           <span className="text-gray-400 text-sm mx-auto">auth.log — live</span>
         </div>
-        <div className="bg-gray-900 p-3 flex-1 font-mono text-xs">
-          <p className="text-red-400 mb-1">
-            Mar 15 14:01:45 Failed password for root from 192.168.1.105
-          </p>
-          <p className="text-green-400 mb-1">
-            Mar 15 14:02:10 Accepted password for mwilson from 10.0.0.8
-          </p>
-          <p className="text-red-400 mb-1">
-            Mar 15 14:02:33 Failed password for root from 192.168.1.105
-          </p>
-        </div>
+      <div className="bg-gray-900 p-3 flex-1 font-mono text-xs overflow-y-auto">
+          {logs?.map((log, i) => (
+            <p key={i} className={`mb-1 ${log.includes("Failed") ? "text-red-400" : "text-green-400"}`}>
+              {log}
+            </p>
+          ))}
       </div>
+    </div>
 
       {/* Terminal panel - 70% */}
       <div className="w-[70%] rounded-t-lg  shadow-2xl border border-gray-700 flex flex-col">
