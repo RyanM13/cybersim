@@ -16,7 +16,3 @@ export async function defendScenario(ip) {
   return data.result;
 }
 
-export async function getLogs() {
-  const { data } = await api.get("/scenario/log");
-  return data;
-}
