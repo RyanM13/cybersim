@@ -21,7 +21,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://special-space-engine-7xrgxw6wv4ghpj7p-5173.app.github.dev"
+        "http://localhost:5174",
+        "https://special-space-engine-7xrgxw6wv4ghpj7p-5173.app.github.dev",
+        "https://special-space-engine-7xrgxw6wv4ghpj7p-5174.app.github.dev",
     ],
     allow_credentials=True,
     allow_methods=["*"],
