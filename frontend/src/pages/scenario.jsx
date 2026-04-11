@@ -8,7 +8,7 @@ export default function Scenario() {
   const [history, setHistory] = useState([]);
   const [logs, setLogs] = useState([]);
   const [memory, setMemory] = useState([]);
-  const [attackerIp, setAttackerIp] = useState(null);
+  const [attackerIp, setAttackerIp] = useState([]);
   const [messages, setMessages] = useState([]);
 
   // Handles enter key pressed for terminal use
