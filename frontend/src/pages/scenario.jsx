@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
-import {
-  sendCommand,
-  startScenario,
-  getLogs,
-} from "@/services/scenarioService";
+import { useState, useEffect, useRef } from "react";
+import { sendCommand, startScenario } from "@/services/scenarioService";
+import { Terminal as LogTerminal } from "../components/ai/terminal.jsx";
+import { Terminal } from "../components/ui/terminal.jsx";
 
 export default function Scenario() {
   // useState variables, keeps variables useable and changable
@@ -11,15 +9,9 @@ export default function Scenario() {
   const [history, setHistory] = useState([]);
   const [logs, setLogs] = useState([]);
   const [memory, setMemory] = useState([]);
-  const [attackerIp, setAttackerIp] = useState(null);
+  const [attackerIp, setAttackerIp] = useState([]);
+  const [messages, setMessages] = useState([]);
 
-  // Claude:
-  //  //useEffect(() => {
-  //    setAttackerIp() = startScenario()
-  //  });
-  //Why can't I do this, since startscenario is returning the ip I want to store it in the attackerIp?
-  //
-  // Uses scenarioService to call backend and receive ip
   useEffect(() => {
     async function fetchIp() {
       const ip = await startScenario();
@@ -37,102 +29,49 @@ export default function Scenario() {
     }
   }
 
-  // Clears the terminal
-  async function handleCommand(command) {
-    if (command.trim() === "clear") {
-      setHistory([]);
-      return;
+  useEffect(() => {
+    async function init() {
+      const ip = await startScenario();
+      setAttackerIp(ip);
     }
+    init();
+  }, []);
 
-    // Claude: How do I handle the history for the array
-    //
-    // sets memory for the evaluation, sets history for dispalying the terminal
+  useEffect(() => {
+    const socket = new WebSocket("ws://localhost:8000/scenario/logs");
 
-    try {
-      const output = await sendCommand(command);
-      setMemory((prev) => [...prev, command]);
-      setHistory((prev) => [
-        ...prev,
-        { type: "input", text: command },
-        { type: "output", text: output },
-      ]);
-    } catch {
-      setHistory((prev) => [
-        ...prev,
-        { type: "input", text: command },
-        { type: "output", text: "Error: coult not connect to the server." },
-      ]);
-    }
-  }
+    socket.onmessage = (event) => {
+      const data = event.data;
+      setMessages((prev) => [...prev, data]);
+    };
+    return () => socket.close();
+  }, []);
 
-  // Claude: How do I use the useEffect to start scenario and get logs?
-  // useEffect(() => {
-  //   async function initScenario() {
-  //     const ip = await startScenario();
-  //     setAttackerIp(ip);
-  //     const logs = await getLogs();
-  //     setLogs(logs);
-  //   }
-  //   initScenario();
-  // }, []);
+  // Claude: How do I handle the history for the array
+  //
+  // sets memory for the evaluation, sets history for dispalying the terminal
 
+  const logOutput = messages.join("\n");
   return (
-    // Claude: Can you give me a mac style terminal and log panes?
-    // Mac style terminal for logs
-    <div className="w-full min-h-[calc(90vh-4rem)]  flex p-6 gap-4">
-      {/* Log panel - 30% */}
-      <div className="w-[30%] rounded-t-lg overflow-hidden shadow-2xl border border-gray-700 flex flex-col">
-        <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="text-gray-400 text-sm mx-auto">auth.log — live</span>
-        </div>
-        <div className="bg-gray-900 p-3 flex-1 font-mono text-xs">
-          <p className="text-red-400 mb-1">
-            Mar 15 14:01:45 Failed password for root from 192.168.1.105
-          </p>
-          <p className="text-green-400 mb-1">
-            Mar 15 14:02:10 Accepted password for mwilson from 10.0.0.8
-          </p>
-          <p className="text-red-400 mb-1">
-            Mar 15 14:02:33 Failed password for root from 192.168.1.105
-          </p>
-        </div>
+    <div className="w-full min-h-[calc(90vh-4rem)] flex p-6 gap-4">
+      return ( // Claude: Can you give me a mac style terminal and log panes? //
+      Mac style terminal for logs
+      <div className="w-full min-h-[calc(90vh-4rem)]  flex p-6 gap-4">
+        <LogTerminal
+          output={logOutput}
+          isStreaming={true}
+          className="flex-1 bg-gray-900 font-mono text-xs"
+        />
       </div>
-
       {/* Terminal panel - 70% */}
-      {/* mac style terminal   */}
-      <div className="w-[70%] rounded-t-lg  shadow-2xl border border-gray-700 flex flex-col">
-        <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="text-gray-400 text-sm mx-auto">terminal</span>
-        </div>
-        <div className="bg-gray-900 p-4 flex-1 font-mono text-sm gap-4">
-          {/* Claude: How do I handle writing to the terminal? */}
-
-          {/* Uses the history array to keep previous commands on the terminal,  */}
-          {/* as well as write the new ones  */}
-          {history.map((line, i) => (
-            <p key={i}>
-              {line.type === "input" && (
-                <>
-                  <span className="text-blue-400">user@cybersim</span>
-                  <span className="text-white">:~$ </span>
-                </>
-              )}
-              <span
-                className={
-                  line.type === "output" ? "text-green-400" : "text-white"
-                }
-              >
-                {line.text}
-              </span>
-            </p>
-          ))}
-        </div>
+      <div className="w-[70%]">
+        <Terminal
+          welcomeMessage={[
+            "CyberSim Defense Terminal v1.0",
+            'Type "--help" to see available commands.',
+          ]}
+          className="h-full"
+        />
 
         <div className="border-t border-white flex flex-row">
           <label className="text-blue-400 ml-1 mr-0.5" for="command">

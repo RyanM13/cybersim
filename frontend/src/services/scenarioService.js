@@ -15,12 +15,12 @@ export async function startScenario() {
 
 // Accepts ip, calls backend recieves confirmation
 export async function defendScenario(ip) {
-  const { data } = await api.post("scenario/defend", { ip });
+  const { data } = await api.post("/scenario/defend", { ip });
   return data.result;
 }
 
 // Calls backend to receive logs
 export async function getLogs() {
   const { data } = await api.get("/log");
-  return data.logs;
+  return data;
 }

@@ -6,7 +6,6 @@ from routes import scenario
 from routes import blog
 
 
-
 # Creating fastapi app for main driver
 app = FastAPI()
 
@@ -16,7 +15,7 @@ app.include_router(commands.router)
 app.include_router(scenario.router)
 app.include_router(blog.router)
 
-# Enviroment varibles 
+# Enviroment varibles
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -29,3 +28,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
