@@ -57,10 +57,16 @@ const createBuiltInCommands = (
     handler: () => {
       addLine("Available commands:", "success");
       addLine("  clear      - Clear the terminal screen");
-      addLine("  help       - Show this help message");
+      addLine("  --help       - Show this help message");
       addLine("  history    - Show command history");
       addLine("  date       - Show current date and time");
-      addLine("  test - show this test");
+      addLine(
+        "  netstat       - Shows active connections including attacker IPs",
+      );
+      addLine("  last          - Shows recent login history");
+      addLine("  ufw deny from ip/subnet  - Blocks ip/subnet ");
+      addLine("  passwd -l root -  Locks root");
+      addLine(" ufw deny <port> - Closes port ");
     },
   },
   {
@@ -82,187 +88,6 @@ const createBuiltInCommands = (
     description: "Show current date and time",
     handler: () => {
       addLine(new Date().toLocaleString(), "success");
-    },
-  },
-  {
-    name: "opentui",
-    description: "Show OpenTUI information",
-    category: "system",
-    handler: () => {
-      addLine("Built with React and shadcn/ui");
-      addLine("GitHub: https://github.com/anomalyco/opentui");
-      addLine("Type 'help' for available commands");
-    },
-  },
-  {
-    name: "ui",
-    description: "Enter UI mode for interactive components",
-    category: "ui",
-    requiresUI: true,
-    handler: (args) => {
-      if (!opentuiContext) {
-        addLine("OpenTUI context not available", "error");
-        return;
-      }
-
-      const [componentType] = args;
-      if (!componentType) {
-        addLine(
-          "Available UI components: form, menu, slider, progress",
-          "success",
-        );
-        addLine("Usage: ui <component-type>");
-        return;
-      }
-
-      opentuiContext.setState((prev) => ({
-        ...prev,
-        mode: "ui",
-        activeComponent: {
-          id: `ui-${Date.now()}`,
-          type: componentType,
-          props: {},
-          active: true,
-        },
-      }));
-
-      addLine(`Entering ${componentType} UI mode...`, "success");
-      addLine("Press ESC to return to command mode");
-    },
-  },
-  {
-    name: "form",
-    description: "Create an interactive form",
-    category: "ui",
-    requiresUI: true,
-    handler: (args) => {
-      if (!opentuiContext) {
-        addLine("OpenTUI context not available", "error");
-        return;
-      }
-
-      const formFields = args.length > 0 ? args : ["name", "email"];
-
-      opentuiContext.setState((prev) => ({
-        ...prev,
-        mode: "form",
-        activeComponent: {
-          id: `form-${Date.now()}`,
-          type: "form",
-          props: { fields: formFields },
-          active: true,
-        },
-      }));
-
-      addLine(`Creating form with fields: ${formFields.join(", ")}`, "success");
-      addLine("Use TAB to navigate, ENTER to submit, ESC to cancel");
-    },
-  },
-  {
-    name: "menu",
-    description: "Create an interactive menu",
-    category: "ui",
-    requiresUI: true,
-    handler: (args) => {
-      if (!opentuiContext) {
-        addLine("OpenTUI context not available", "error");
-        return;
-      }
-
-      const menuItems =
-        args.length > 0 ? args : ["Option 1", "Option 2", "Option 3"];
-
-      opentuiContext.setState((prev) => ({
-        ...prev,
-        mode: "ui",
-        activeComponent: {
-          id: `menu-${Date.now()}`,
-          type: "menu",
-          props: { items: menuItems },
-          active: true,
-        },
-        menuSelection: 0,
-      }));
-
-      addLine(`Creating menu with options: ${menuItems.join(", ")}`, "success");
-      addLine("Use ↑↓ arrows to navigate, ENTER to select, ESC to cancel");
-    },
-  },
-  {
-    name: "progress",
-    description: "Show a progress bar",
-    category: "ui",
-    handler: async (args) => {
-      const duration = Number.parseInt(args[0]) || 3000;
-      const steps = 20;
-      const stepDuration = duration / steps;
-
-      addLine("Starting progress...");
-
-      // Add the initial progress line
-      addLine(`Progress: [░░░░░░░░░░░░░░░░░░░░] 0%`);
-
-      for (let i = 1; i <= steps; i++) {
-        const percent = Math.round((i / steps) * 100);
-        const filled = "█".repeat(i);
-        const empty = "░".repeat(steps - i);
-        const bar = `[${filled}${empty}] ${percent}%`;
-
-        // Always update the last line - never add a new one
-        updateLastLine(`Progress: ${bar}`);
-
-        if (i < steps) {
-          await new Promise((resolve) => setTimeout(resolve, stepDuration));
-        }
-      }
-
-      addLine("Progress complete!", "success");
-    },
-  },
-  {
-    name: "ascii",
-    description: "Generate ASCII art",
-    category: "ui",
-    handler: (args) => {
-      const text = args.join(" ") || "OpenTUI";
-      addLine("Generating ASCII art...", "success");
-
-      // Simple ASCII art generator
-      const asciiArt = [
-        "  ___                   _____ _   _ ___ ",
-        " / _ \\ _ __   ___ _ __  |_   _| | | |_ _|",
-        "| | | | '_ \\ / _ \\ '_ \\   | | | | | || | ",
-        "| |_| | |_) |  __/ | | |  | | | |_| || | ",
-        " \\___/| .__/ \\___|_| |_|  |_|  \\___/|___|",
-        "      |_|                               ",
-      ];
-
-      asciiArt.forEach((line) => addLine(line, "success"));
-    },
-  },
-  {
-    name: "table",
-    description: "Display data in table format",
-    category: "data",
-    handler: (args) => {
-      const sampleData = [
-        ["Name", "Age", "City"],
-        ["Alice", "25", "New York"],
-        ["Bob", "30", "San Francisco"],
-        ["Charlie", "35", "Chicago"],
-      ];
-
-      addLine("Sample Data Table:", "success");
-      sampleData.forEach((row, index) => {
-        const formattedRow = row.map((cell) => cell.padEnd(12)).join(" | ");
-        addLine(
-          index === 0 ? `| ${formattedRow} |` : `| ${formattedRow} |`,
-          "output",
-        );
-        if (index === 0) {
-          addLine(`|${"-".repeat(formattedRow.length + 2)}|`, "output");
-        }
-      });
     },
   },
 ];
