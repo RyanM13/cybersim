@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { login } from "@/services/authService";
 
 export default function Login() {
+  // useState variables to make variables changable and useable
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // waits for api to return token, if true routes to dashboard
   const handlelogin = async (username, password) => {
     setError("");
     try {
@@ -21,5 +23,6 @@ export default function Login() {
     }
   };
 
+  // Using shadcn loginform
   return <LoginForm onLogin={handlelogin} error={error} />;
 }

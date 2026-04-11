@@ -8,12 +8,15 @@ router = APIRouter(prefix="/scenario")
 
 
 @router.get("/start")
+# Generates random attacker ip and sends it to the frontend
 def start_scenario():
     subnet = scenario.generate_attacker_ip()
     return {"attacker_subnet": subnet}
 
 
+# Setting router for defend endpoint
 @router.post("/defend")
+# Checks for correct answer from user and either ends scenario or continues
 def end_scenario(request: DefendRequest):
     if scenario.check_ip(request.ip):
         return {"result": "win"}

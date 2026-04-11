@@ -22,6 +22,8 @@ export function SignupForm({ onSignup, error, className, ...props }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [localError, setLocalError] = useState("");
 
+  // Claude: How do I handle the submit in shadcn login-01 form
+  // checks password length and matching passwords
   const handleSubmit = (e) => {
     e.preventDefault();
     setLocalError("");

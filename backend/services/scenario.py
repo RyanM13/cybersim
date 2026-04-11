@@ -2,12 +2,15 @@ import random
 from datetime import datetime
 
 
+# Class for scenario, encourages scalability
 class Scenario:
     def __init__(self):
         self.attacker_subnet = None
         self.attacker_ips = []
         self.safe_ips = [self.generate_random_ip() for _ in range(10)]
 
+    # Google: How do I genearte a random IP address in python
+    # Generates a random ip for the attacker to be assigned
     def generate_attacker_ip(self):
         # Generate a subnet so multiple IPs come from same range
         self.attacker_subnet = f"{random.randint(1, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
@@ -16,9 +19,11 @@ class Scenario:
         ]
         return self.attacker_subnet  # return subnet so frontend knows what to block
 
+    # Generates a random ip for fake users
     def generate_random_ip(self):
         return f"{random.randint(1, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
 
+    # Accepts user input ip and checks to see if it is the attackers ip
     def check_ip(self, ip: str):
         # User should block the subnet e.g. "209.132.191.0/24"
         return self.attacker_subnet in ip
@@ -38,6 +43,7 @@ class Scenario:
     real_usernames = ["jsmith", "mwilson", "tlee", "rgarcia", "bknight"]
     noise_types = ["cron", "sudo", "systemd"]
 
+    # Generates random logs to make it a real world situation
     def generate_logs(self):
         timestamp = datetime.now().strftime("%b %d %H:%M:%S")
         pid = random.randint(10000, 99999)

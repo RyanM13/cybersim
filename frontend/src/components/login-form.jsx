@@ -21,8 +21,11 @@ export function LoginForm({ onLogin, error, className, ...props }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // logs in user
   const handleSubmit = (e) => {
+    // Prevents state from being lost
     e.preventDefault();
+    // Validates information
     onLogin(username, password);
   };
   return (

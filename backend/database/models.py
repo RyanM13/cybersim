@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String
 from database.db import Base
 
 
+# Created user model to follow for inserting into the database 
 class User(Base):
     __tablename__ = "users"
 
@@ -10,6 +11,7 @@ class User(Base):
     password = Column(String, nullable=False)
 
 
+# Created commands model to follow for recieving from the database
 class Commands(Base):
     __tablename__ = "commands"
 

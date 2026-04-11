@@ -6,11 +6,14 @@ from schemas import UserSignup, UserLogin
 from services.auth import hash_password, check_password, create_token
 
 
+# Setting router for prefix
 router = APIRouter(prefix="/auth")
 
 
 # Claude: How do I began writing the routes for this auth system
+# Setting route for login endpoint
 @router.post("/login")
+# Accepts user and db, queries for user checks user credentials and generates token
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.username == user.username).first()
 
@@ -24,7 +27,9 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     return {"access_token": token}
 
 
+# Setting route for signup endpoint
 @router.post("/signup")
+# Accepts user and db queries db for existsing user, calls hash_password, creates new user in the database
 def signup(user: UserSignup, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
