@@ -9,8 +9,16 @@ router = APIRouter(prefix="/scenario")
 
 @router.get("/start")
 def start_scenario():
-    ip = scenario.generate_attacker_ip()
-    return {"attacker_ip": ip}
+    subnet = scenario.generate_attacker_ip()
+    return {"attacker_subnet": subnet}
+
+
+@router.post("/defend")
+def end_scenario(request: DefendRequest):
+    if scenario.check_ip(request.ip):
+        return {"result": "win"}
+    else:
+        return {"result": "wrong"}
 
 
 @router.websocket("/logs")
@@ -20,11 +28,3 @@ async def get_logs(websocket: WebSocket):
         log = scenario.generate_logs()
         await websocket.send_text(log)
         await asyncio.sleep(2)
-
-
-@router.post("/defend")
-def end_scenario(request: DefendRequest):
-    if scenario.check_ip(request.ip):
-        return {"result": "Correct"}
-    else:
-        return {"result": "Wrong"}
