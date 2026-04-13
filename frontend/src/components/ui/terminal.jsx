@@ -57,16 +57,13 @@ const createBuiltInCommands = (
     handler: () => {
       addLine("Available commands:", "success");
       addLine("  clear      - Clear the terminal screen");
-      addLine("  --help       - Show this help message");
+      addLine("  help       - Show this help message");
       addLine("  history    - Show command history");
       addLine("  date       - Show current date and time");
       addLine(
         "  netstat       - Shows active connections including attacker IPs",
       );
-      addLine("  last          - Shows recent login history");
       addLine("  ufw deny from ip/subnet  - Blocks ip/subnet ");
-      addLine("  passwd -l root -  Locks root");
-      addLine(" ufw deny <port> - Closes port ");
     },
   },
   {
@@ -634,7 +631,7 @@ const Terminal = React.forwardRef(
         case "minimal":
           return "h-48 sm:h-52";
         default:
-          return "h-[55vh] min-h-72 max-h-[36rem] sm:h-96";
+          return "flex-1";
       }
     };
 

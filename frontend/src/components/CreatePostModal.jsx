@@ -15,7 +15,9 @@ export default function CreatePostModal({ onClose, onSubmit }) {
       <div className="bg-background rounded-2xl shadow-xl w-full max-w-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">New Blog Post</h2>
-          <button onClick={onClose}><X size={20} /></button>
+          <button onClick={onClose}>
+            <X size={20} />
+          </button>
         </div>
         <input
           className="w-full border rounded-lg px-3 py-2 mb-3 text-sm"
@@ -30,7 +32,10 @@ export default function CreatePostModal({ onClose, onSubmit }) {
           onChange={(e) => setBody(e.target.value)}
         />
         <div className="flex justify-end gap-2 mt-4">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg border text-sm">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg border text-sm"
+          >
             Cancel
           </button>
           <button
@@ -44,3 +49,4 @@ export default function CreatePostModal({ onClose, onSubmit }) {
     </div>
   );
 }
+
