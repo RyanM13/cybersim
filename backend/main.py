@@ -11,7 +11,7 @@ app = FastAPI()
 
 # Routes to access from frontend
 app.include_router(auth.router)
-app.include_router(commands.router)
+# app.include_router(commands.router)
 app.include_router(scenario.router)
 app.include_router(blog.router)
 
@@ -28,4 +28,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-

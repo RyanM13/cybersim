@@ -14,7 +14,7 @@ class UserLogin(BaseModel):
 
 
 # This tells python what to expect from the database
-class Command(BaseModel):
+class CommandRequest(BaseModel):
     command: str
 
 
@@ -22,7 +22,6 @@ class Command(BaseModel):
 # This tells python what to expect from the database
 class DefendRequest(BaseModel):
     ip: str
-
 
 
 # This tells python what to expect from the database
