@@ -14,7 +14,7 @@ const availableAttacks = [
     difficulty: "Beginner",
     badge: "Available",
     badgeVariant: "secondary",
-    route: "/dashboard/scenario",
+    route: "/scenario",
   },
 ];
 
@@ -68,7 +68,7 @@ export default function DashBoard() {
   const [selected, setSelected] = useState(null);
 
   return (
-    <div className="w-full p-6 flex flex-col">
+    <div className="w-full p-6 flex flex-col items-center">
       <Tabs className="w-full max-w-5xl" defaultValue="available">
         <TabsList className="mb-6 bg-black">
           <TabsTrigger value="available">Available</TabsTrigger>
