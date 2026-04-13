@@ -54,9 +54,12 @@ class Scenario:
     def generate_attacker_ip(self):
         # Generate a subnet so multiple IPs come from same range
         self.attacker_subnet = f"{random.randint(1, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
+        self.defenses_applied = []
         self.attacker_ips = [
             f"{self.attacker_subnet}.{i}" for i in random.sample(range(1, 255), 5)
         ]
+        self.attack_active = True
+        self.rate_limited = False
         return self.attacker_subnet  # return subnet so frontend knows what to block
 
     # Claude: How does ufw limit ssh work in the real world?
@@ -65,12 +68,39 @@ class Scenario:
         return "Rule added: Limit ssh\nSSH connections are now limited to 6 per 30 seconds."
 
     def ufw_deny(self, ip: str):
-        self.defenses_applied.append("ufw_deny_")
         if self.check_ip(ip):
+            self.defenses_applied.append("ufw_deny_")
             self.attack_active = False
             return f"Rule added: deny from {ip}\nAttack successfully blocked!"
         else:
+            self.defenses_applied.append("ufw_deny_wrong_ip")
             return f"Rule added: deny from {ip}\nRule applied but the attack continues."
+
+    # Claude: How does netstat command look like in logs?
+
+    def netstat(self):
+        lines = []
+        connections = []
+        self.defenses_applied.append("netstat")
+
+        # Add attacker connections
+        for ip in self.attacker_ips:
+            port = random.randint(10000, 65535)
+            connections.append(f"{'tcp':<6} {f'{ip}:{port}':<25} {'SYN_RECV':<15}")
+
+        for user, ip in list(self.user_ip_map.items())[:5]:
+            port = random.randint(10000, 65535)
+            connections.append(f"{'tcp':<6} {f'{ip}:{port}':<25} {'ESTABLISHED':<15}")
+
+        # Shuffle so attackers aren't all at the top
+        random.shuffle(connections)
+
+        lines.append("Active Internet connections")
+        lines.append(f"{'Proto':<6} {'Foreign Address':<25} {'State':<15}")
+        lines.append("-" * 50)
+        lines.extend(connections)
+
+        return "\n".join(lines)
 
     # Generates a random ip for fake users
     def generate_random_ip(self):
@@ -129,28 +159,3 @@ class Scenario:
             attacker_ip = random.choice(self.attacker_ips)
             username = random.choice(self.attack_usernames)
             return f"{timestamp} webserver01 sshd{pid}: Failed password for invalid user {username} from {attacker_ip} port {port} ssh2"
-
-    # Claude: How does netstat command look like in logs?
-
-    def netstat(self):
-        lines = []
-        connections = []
-
-        # Add attacker connections
-        for ip in self.attacker_ips:
-            port = random.randint(10000, 65535)
-            connections.append(f"{'tcp':<6} {f'{ip}:{port}':<25} {'SYN_RECV':<15}")
-
-        for user, ip in list(self.user_ip_map.items())[:5]:
-            port = random.randint(10000, 65535)
-            connections.append(f"{'tcp':<6} {f'{ip}:{port}':<25} {'ESTABLISHED':<15}")
-
-        # Shuffle so attackers aren't all at the top
-        random.shuffle(connections)
-
-        lines.append("Active Internet connections")
-        lines.append(f"{'Proto':<6} {'Foreign Address':<25} {'State':<15}")
-        lines.append("-" * 50)
-        lines.extend(connections)
-
-        return "\n".join(lines)
