@@ -2,6 +2,9 @@ from services.scenario import Scenario
 from fastapi import APIRouter, Depends, WebSocket
 from schemas import DefendRequest, CommandRequest
 import asyncio
+from services.ai import AIAnalyzer
+
+ai = AIAnalyzer()
 
 scenario = Scenario()  # create one instance to share across routes
 router = APIRouter(prefix="/scenario")
@@ -35,13 +38,11 @@ def handle_command(request: CommandRequest):
 
     elif cmd.startswith("ufw deny from"):
         ip = cmd.replace("ufw deny from", "").strip()
-
-        output = scenario.ufw_deny(ip)
-
-        if scenario.check_ip(ip):
-            return {"output": output, "result": "win"}
-        else:
-            return {"output": output, "result": "continue"}
+        result = scenario.ufw_deny(ip)
+        if "successfully blocked" in result:
+            feedback = ai.analyze(scenario.defenses_applied, not scenario.attack_active)
+            return {"output": result, "result": "win", "feedback": feedback}
+        return {"output": result}
 
     else:
         return {"output": f"command not found: {cmd}", "result": "continue"}

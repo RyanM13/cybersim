@@ -48,6 +48,7 @@ export default function Scenario() {
 
         if (data.result === "win") {
           setAttackState(false);
+          setFeedback(data.feedback);
           setDialog(true);
         }
       },
