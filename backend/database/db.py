@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, DeclarativeBase
 user = "postgres"
 password = "MSUCOLT!"
 host = "localhost"
-port = 4000
+port = 5432
 database = "CyberSim"
 
 
@@ -17,9 +17,9 @@ DATABASE_URL = "postgresql://{0}:{1}@{2}:{3}/{4}".format(
     user, password, host, port, database
 )
 
-# Createse the connection to the database for sqlalchemy  
+# Createse the connection to the database for sqlalchemy
 engine = create_engine(DATABASE_URL)
-# Creates a tempory worksspace 
+# Creates a tempory worksspace
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -48,4 +48,3 @@ if __name__ == "__main__":
 
     except Exception as ex:
         print("Connection failed:", ex)
-
