@@ -16,18 +16,18 @@ const availableAttacks = [
     badgeVariant: "secondary",
     route: "/scenario",
   },
-];
-
-const futureAttacks = [
   {
     id: 2,
     title: "DDoS Attack",
     description:
       "A distributed denial of service attack overwhelms your server with traffic from multiple sources, making it unavailable to legitimate users.",
     difficulty: "Intermediate",
-    badge: "Coming Soon",
+    badge: "Available",
     badgeVariant: "outline",
   },
+];
+
+const futureAttacks = [
   {
     id: 3,
     title: "SQL Injection",

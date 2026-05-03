@@ -8,8 +8,12 @@ export async function sendCommand(command) {
 }
 
 // Calls backend to start scenario
-export async function startScenario() {
-  const { data } = await api.get("/scenario/start");
+export async function startScenario(attacks[]) {
+  const { data } = await api.get("/scenario/start", {
+    params: {
+      attacks: attacks[],
+    }
+  });
   return data.attacker_ip;
 }
 
