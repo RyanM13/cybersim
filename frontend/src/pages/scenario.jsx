@@ -3,6 +3,8 @@ import { sendCommand, startScenario } from "@/services/scenarioService";
 import { Terminal as LogTerminal } from "../components/ai/terminal.jsx";
 import { Terminal } from "../components/ui/terminal.jsx";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { attackRegistry } from "../attacks/index.js";
 
 import {
   AlertDialog,
@@ -18,50 +20,56 @@ import {
 export default function Scenario() {
   const navigate = useNavigate();
 
-  const [command, setCommand] = useState("");
-  const [history, setHistory] = useState([]);
-  const [logs, setLogs] = useState([]);
-  const [memory, setMemory] = useState([]);
   const [attackerIp, setAttackerIp] = useState([]);
   const [messages, setMessages] = useState([]);
   const [feedback, setFeedback] = useState("");
   const [attackState, setAttackState] = useState(true);
   const [dialog, setDialog] = useState(false);
+  const location = useLocation();
+  const selectedAttacks = location.state?.attacks || [];
 
-  const scenarioCommands = {
-    netstat: {
-      name: "netstat",
-      description: "Shows active network connections and IPs",
-      handler: async (args, context) => {
-        const data = await sendCommand("netstat");
-        data.output.split("\n").forEach((line) => context.addLine(line));
-      },
-    },
-    ufw: {
-      name: "ufw",
-      description: "Firewall management",
-      handler: async (args, context) => {
-        const subcommand = args.join(" ");
-        const data = await sendCommand(`ufw ${subcommand}`);
+  // chatgpt: How do I change this to accepct different attacks?
+  const scenarioCommands = {};
 
-        data.output.split("\n").forEach((line) => context.addLine(line));
+  selectedAttacks.forEach((attack) => {
+    const attackDef = attackRegistry[attack.id];
 
-        if (data.result === "win") {
-          setAttackState(false);
-          setFeedback(data.feedback);
-          setDialog(true);
-        }
-      },
-    },
-  };
+    if (!attackDef) return;
+
+    Object.entries(attackDef.commands).forEach(([cmdName, handler]) => {
+      scenarioCommands[cmdName] = {
+        name: cmdName,
+        description: "Dynamic command",
+        handler: async (args, context) => {
+          await handler(args, context, ({ attackComplete, feedback }) => {
+            if (attackComplete) {
+              setAttackState(false);
+              setFeedback(feedback);
+              setDialog(true);
+            }
+          });
+        },
+      };
+    });
+  });
 
   useEffect(() => {
-    async function fetchIp() {
-      const ip = await startScenario();
-      setAttackerIp(ip);
+    async function init() {
+      const results = await Promise.all(
+        selectedAttacks.map((attack) => {
+          const attackDef = attackRegistry[attack.id];
+          if (!attackDef) return null;
+          return attackDef.start();
+        }),
+      );
+
+      const ips = results.filter(Boolean).map((r) => r.attackerIp);
+
+      setAttackerIp(ips);
     }
-    fetchIp();
-  }, []);
+
+    init();
+  }, [selectedAttacks]);
 
   useEffect(() => {
     if (!attackState) return;
@@ -80,8 +88,17 @@ export default function Scenario() {
     setAttackState(true);
     setDialog(false);
 
-    const ip = await startScenario();
-    setAttackerIp(ip);
+    const results = await Promise.all(
+      selectedAttacks.map((attack) => {
+        const attackDef = attackRegistry[attack.id];
+        if (!attackDef) return null;
+        return attackDef.start();
+      }),
+    );
+
+    const ips = results.filter(Boolean).map((r) => r.attackerIp);
+
+    setAttackerIp(ips);
   };
 
   const goToDashboard = () => {
@@ -102,7 +119,7 @@ export default function Scenario() {
               <br />
               <div className="space-y-2">
                 <div>
-                  <strong>Attacker Subnet:</strong> {attackerIp}
+                  <strong>Attacker Subnet(s):</strong> {attackerIp.join(", ")}
                 </div>
                 <div>
                   <strong>Feedback:</strong>

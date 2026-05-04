@@ -16,18 +16,18 @@ const availableAttacks = [
     badgeVariant: "secondary",
     route: "/scenario",
   },
-];
-
-const futureAttacks = [
   {
     id: 2,
     title: "DDoS Attack",
     description:
       "A distributed denial of service attack overwhelms your server with traffic from multiple sources, making it unavailable to legitimate users.",
     difficulty: "Intermediate",
-    badge: "Coming Soon",
+    badge: "Available",
     badgeVariant: "outline",
   },
+];
+
+const futureAttacks = [
   {
     id: 3,
     title: "SQL Injection",
@@ -65,7 +65,7 @@ const difficultyColor = (difficulty) => {
 
 export default function DashBoard() {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState([]);
 
   return (
     <div className="w-full p-6 flex flex-col items-center">
@@ -80,14 +80,21 @@ export default function DashBoard() {
             {availableAttacks.map((attack) => (
               <div
                 key={attack.id}
-                onClick={() => setSelected(attack.id)}
+                onClick={() => {
+                  setSelected(
+                    (prev) =>
+                      prev.includes(attack.id)
+                        ? prev.filter((id) => id !== attack.id) // remove
+                        : [...prev, attack.id], // add
+                  );
+                }}
                 className={`
                 group cursor-pointer rounded-xl border
                 bg-gradient-to-b from-slate-900 to-slate-800
                 p-6 shadow-sm transition-all duration-200
                 hover:shadow-lg hover:-translate-y-1
                 ${
-                  selected === attack.id
+                  selected.includes(attack.id)
                     ? "border-white/80 ring-2 ring-white/20"
                     : "border-white/10 hover:border-white/30"
                 }
@@ -122,21 +129,28 @@ export default function DashBoard() {
                   >
                     Configure
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(attack.route);
-                    }}
-                    className="transition-all group-hover:scale-[1.03]"
-                  >
-                    Start Scenario
-                  </Button>
                 </div>
               </div>
             ))}
           </div>
         </TabsContent>
+
+        <Button
+          className={"bg-gray-800 flex items-center mt-3"}
+          size="sm"
+          onClick={() => {
+            navigate("/scenario", {
+              state: {
+                attacks: availableAttacks.filter((a) =>
+                  selected.includes(a.id),
+                ),
+              },
+            });
+          }}
+          disabled={selected.length === 0}
+        >
+          Start Scenario
+        </Button>
 
         <TabsContent value="coming-soon">
           <div className="grid gap-6 md:grid-cols-2">
