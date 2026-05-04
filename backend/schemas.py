@@ -27,3 +27,7 @@ class DefendRequest(BaseModel):
 # This tells python what to expect from the database
 class Logs(BaseModel):
     log: str
+
+
+class StartRequest(BaseModel):
+    attacks = list[str]
